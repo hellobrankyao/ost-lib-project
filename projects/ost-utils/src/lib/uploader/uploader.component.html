@@ -1,0 +1,130 @@
+<!-- 表格流 -->
+<ng-container *ngIf="display === UpLoaderDisplay.GRID">
+  <div class="file-grid-layout">
+    <ng-container *ngIf="fileQueued">
+      <!-- 文件队列 -->
+      <ng-container *ngFor="let item of fileQueued">
+        <!-- 文件项 -->
+        <div
+          (click)="onGridItemClick($event, item)"
+          class="file-grid-item"
+          [ngStyle]="{ 'background-image': 'url(' + item.src + ')' }"
+        >
+          <!-- 头部 -->
+          <img
+            [ngClass]="{
+              hide: item.state === State.progress,
+              readonly: readonly
+            }"
+            class="grid-del-img"
+            src="assets/images/uploader/del_1.png"
+            (click)="onDelClick($event, item)"
+          />
+          <!-- 尾部 -->
+          <diV class="grid-msg-layout">
+            <!-- 进度格子 -->
+            <div class="progress" *ngIf="item.state === State.progress">
+              <ost-progress barwidth="10" barColor="#"></ost-progress>
+            </div>
+            <!-- 删除中 -->
+            <div class="msg-del" *ngIf="item.state === State.cancelled">
+              删除中...
+            </div>
+            <!-- 上传成功 -->
+            <div class="success" *ngIf="item.state === State.complete">
+              上传成功
+            </div>
+            <!-- 发生错误 -->
+            <div class="error" *ngIf="item.state === State.error">发生错误</div>
+          </diV>
+        </div>
+      </ng-container>
+    </ng-container>
+    <!-- 添加按钮 -->
+    <div
+      class="file-grid-add-item"
+      [ngClass]="{ hide: fileQueued.length >= maxFileNum, readonly: readonly }"
+    >
+      <div #filePicker class="old-file-picker-grid"></div>
+      <div class="file-picker-grid">
+        <img src="assets/images/uploader/plus.png" />
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- 列表流 -->
+<ng-container *ngIf="display === UpLoaderDisplay.LIST">
+  <div class="file-list-layout">
+    <ng-container *ngIf="fileQueued">
+      <!-- 文件队列 -->
+      <ng-container *ngFor="let item of fileQueued">
+        <!-- list条目 -->
+        <div class="file-list-itme">
+          <div class="list-name">
+            <img src="assets/images/uploader/file.png" />
+            {{ item.name }}
+          </div>
+          <div class="list-msg-layout">
+            <!-- 成功信息 -->
+            <div class="success-grid" *ngIf="item.state === State.complete">
+              上传成功
+            </div>
+            <!-- 删除信息 -->
+            <div class="msg-del-grid" *ngIf="item.state === State.cancelled">
+              删除中...
+            </div>
+            <!-- 错误信息 -->
+            <div class="error-grid" *ngIf="item.state === State.error">
+              发生错误
+            </div>
+            <!-- 进度条 -->
+            <ost-progress
+              *ngIf="item.state === State.progress"
+              barwidth="10"
+              barColor="#"
+              [value]="item.progress"
+            ></ost-progress>
+          </div>
+          <div class="list-option">
+            <img
+              *ngIf="item.type.split('/')[0] === 'image'"
+              [ngClass]="{
+                hide: item.state !== State.complete
+              }"
+              src="assets/images/uploader/see.png"
+              (click)="openDetails(item)"
+            />
+            <img
+              *ngIf="item.type.split('/')[0] !== 'image'"
+              [ngClass]="{
+                hide: item.state !== State.complete
+              }"
+              src="assets/images/uploader/download.png"
+              (click)="onDownload(item)"
+            />
+            <img
+              [ngClass]="{
+                hide: item.state === State.progress,
+                readonly: readonly
+              }"
+              (click)="onDelClick($event, item)"
+              src="assets/images/uploader/del_2.png"
+            />
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+    <!-- 添加按钮 -->
+    <div
+      class="file-list-add-itme"
+      [ngClass]="{ hide: fileQueued.length >= maxFileNum, readonly: readonly }"
+    >
+      <div #filePicker class="old-file-picker-list"></div>
+      <div class="itme-picker-plus-list">
+        <img src="assets/images/uploader/plus.png" />
+      </div>
+    </div>
+  </div>
+</ng-container>
+
